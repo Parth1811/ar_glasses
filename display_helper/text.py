@@ -1,24 +1,28 @@
+#!/usr/bin/python
+
+
 import pygame
+import CONST as C
 
 class Text():
-    def __init__(self, screen, screen_width, screen_height):
-        self.screen = screen
-        self.screen_width = screen_width
-        self.screen_height = screen_height
+    def __init__(self, screen_, label_, loc_x, loc_y, font_size = C.TEXT_FONT_SIZE,\
+        color_ = C.WHITE, bg_color_ = None):
+        self.screen = screen_
+        self.label = label_
+        self.x_location = loc_x
+        self.y_location = loc_y
+        self.size = font_size
+        self.color = color_
+        self.bg_color = bg_color_
 
-    def is_draw(self, data, text_size, y ):
-        display_image = pygame.image.load('img.jpeg')
-        self.screen.blit(display_image, (0,0))
-        basicfont = pygame.font.SysFont(None, text_size)
-        text = basicfont.render(data, True, (255, 0, 0))
-        textrect = text.get_rect()
-        textrect.centerx = self.screen.get_rect().centerx
-        textrect.centery = y
- 
-        self.screen.blit(text, textrect)
- 
-        pygame.display.update()
-        pygame.display.flip()
+
+
+    def draw(self):
+        basicfont = pygame.font.SysFont(None, self.size)
+        text_surface = basicfont.render(self.label, True, self.color)
+        text_rect = text_surface.get_rect()
+        text_rect.center = (self.x_location , self.y_location) #self.screen.get_rect().centerx
+        self.screen.blit(text_surface, text_rect)
 
     def animate():
         pass
