@@ -22,6 +22,7 @@ class Text():
         text_surface = basicfont.render(self.label, True, self.color)
         text_rect = text_surface.get_rect()
         text_rect.center = (self.x_location , self.y_location) #self.screen.get_rect().centerx
+        text_surface.set_alpha(128)
         self.screen.blit(text_surface, text_rect)
 
     def animate():

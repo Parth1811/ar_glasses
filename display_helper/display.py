@@ -2,6 +2,8 @@
 
 import pygame
 import cv2
+import numpy as np
+
 import text
 import camera_driver
 
@@ -17,7 +19,8 @@ def init_screen():
 
 def display_image(screen, image_path):
     image = pygame.image.load(image_path)
-    pygame.transform.scale(image, (SCREEN_WIDTH, SCREEN_HEIGHT))
+    image = pygame.transform.scale(image, screen.get_size())
+    pygame.transform.scale(image, screen.get_size())
     screen.blit(image, (0,0))
 
 
@@ -46,7 +49,12 @@ def run(is_face_present, data):
             video_feed = camera_driver.cam_read()
             pygame_frame = convert_cvimage(video_feed['frame'])
             screen.blit(pygame_frame, (0,0))
-            text.Text(screen, "Saavi", SCREEN_WIDTH/2, 200, font_size = 72).draw()
+            window = pygame.surface.Surface((SCREEN_WIDTH/2,SCREEN_HEIGHT/2))
+            #window.fill((0,0,0), rect= [SCREEN_WIDTH/2, SCREEN_HEIGHT/2, SCREEN_WIDTH/2, SCREEN_HEIGHT/2])
+            display_image(window, 'resources/gui.jpg')
+            window.set_alpha(200)
+            screen.blit(window, (SCREEN_WIDTH/2,SCREEN_HEIGHT/2))
+            text.Text(screen, "Saavi", 480, 300, font_size = 72).draw()
 
         pygame.display.update()
 
@@ -54,7 +62,9 @@ def run(is_face_present, data):
     quit()
 
 def convert_cvimage(frame):
-    frame=cv2.resize(frame,(640,480))
+    frame = np.rot90(frame)
+    frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+    frame = cv2.resize(frame,(SCREEN_HEIGHT,SCREEN_WIDTH))
     pygame_frame = pygame.surfarray.make_surface(frame)
     return pygame_frame
 
