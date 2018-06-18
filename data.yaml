@@ -1,0 +1,15 @@
+saavi:
+  images:
+    - /home/saavi/database/me/1.jpg
+    - /home/saavi/database/me/2.jpg
+    - /home/saavi/database/me/3.jpg
+    - /home/saavi/database/me/4.jpg
+    - /home/saavi/database/me/5.jpg
+    - /home/saavi/database/me/6.jpg
+    - /home/saavi/database/me/7.jpg
+    - /home/saavi/database/me/8.jpg
+  data:
+    FULL NAME: "saavi yadav"
+    NO OF PHOTOS AVAILABLE: 8
+    PROFILE PICTURE: /home/saavi/database/me/5.jpg
+    META DATA: "CHEMICAL FRESHIE... ADDRESS:-N-313(HOPEFULLY) HOSTEL 10"
