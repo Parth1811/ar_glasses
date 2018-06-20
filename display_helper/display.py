@@ -61,7 +61,7 @@ def mode_transition (screen, image_path, duration = 0.5):
             continue
 
 
-def run(is_face_present, data):
+def run(data):
     screen, clock = init_screen()
     running = True
 
@@ -74,6 +74,7 @@ def run(is_face_present, data):
                 running = False
 
 
+<<<<<<< HEAD
         if MODE == 2:
             if is_face_present == True:
                 display_image(screen, 'resources/gui.jpg')
@@ -81,6 +82,15 @@ def run(is_face_present, data):
                 text.Text(screen, "Parth", SCREEN_WIDTH/2, 150).draw()
         elif MODE == 1:
             video_feed = camera_driver.cam_read()
+=======
+        if MODE[I] == 1:
+            if data["is_face_present"] == True:
+                display_image(screen, 'img.jpeg')
+                #text.Text(screen, "Saavi", SCREEN_WIDTH/2, 200, font_size = 72).draw()
+                text.Text(screen, data["face_info"]["full name"], SCREEN_WIDTH/2, 150).draw()
+        else :
+            video_feed = camera_driver.cam_read(data["camera"])
+>>>>>>> face_recognition
             pygame_frame = convert_cvimage(video_feed['frame'])
             screen.blit(pygame_frame, (0,0))
             window = pygame.surface.Surface((SCREEN_WIDTH/2,SCREEN_HEIGHT/2))

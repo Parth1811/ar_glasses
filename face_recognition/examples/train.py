@@ -8,14 +8,16 @@ ylabel=[]
 currid=0
 labelid={}
 
-facec = cv2.CascadeClassifier('/home/saavi/Downloads/opencvtut/opencv-3.4.1/data/haarcascades/haarcascade_frontalface_default.xml')
+facec = cv2.CascadeClassifier('haarcascade_frontalface_default.xml')
 recog=cv2.face.LBPHFaceRecognizer_create()
+print "DONE!!"
 
-for root,dirs,files in os.walk("."):
+for root,dirs,files in os.walk("database/"):
  for file in files:
   if file.endswith("jpg") or file.endswith("png"):
    path = os.path.join(root, file)
-   label=os.path.basename(root).replace(" ","-").lower()
+   print path
+   label = root
    #print(path,label)
    if not label in labelid:
     labelid[label]=currid

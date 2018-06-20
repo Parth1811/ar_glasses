@@ -2,13 +2,13 @@ import numpy as py
 import cv2
 import pickle
 
-face_cascade=cv2.CascadeClassifier('/home/saavi/Downloads/opencvtut/opencv-3.4.1/data/haarcascades/haarcascade_frontalface_default.xml')
+face_cascade=cv2.CascadeClassifier('haarcascade_frontalface_default.xml')
 #eye_cascade=cv2.CascadeClassifier('/home/saavi/Downloads/opencvtut/opencv-3.4.1/data/haarcascades/haarcascade_eye.xml')
 #smile_cascade=cv2.CascadeClassifier('/home/saavi/Downloads/opencvtut/opencv-3.4.1/data/haarcascades/haarcascade_smile.xml')
 
 
 recog=cv2.face.LBPHFaceRecognizer_create()
-recog.read("trainner.yml")
+recog.read("trainner.yaml")
 
 labels={"person_name":1}
 with open("labels.pickel", 'rb') as f:
@@ -42,11 +42,10 @@ while(True):
 		#subit= smile_cascade.detectMultiScale(roi_gray)
 		#for (sx,sy,sw,sh) in subit:
 		#	cv2.rectangle(frame,(sx,sy),(sx+sw,sy+sh),(200,0,100),2)
-		
+
 	cv2.imshow('frame',frame)
 	if cv2.waitKey(20) & 0xFF== ord('q'):
 		break
 
 cap.release()
-cv2.destroyAllWindows()  
-
+cv2.destroyAllWindows()

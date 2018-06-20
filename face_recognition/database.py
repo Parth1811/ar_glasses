@@ -3,6 +3,7 @@ import numpy as np
 import os
 import cv2
 import yaml
+from PIL import Image
 
 FULL_DATABASE_PATH = os.path.expanduser("~/ar_glasses/face_recognition/database")
 
@@ -15,12 +16,12 @@ def read_all_images(label_type = "int"):
         for file in files:
             if file.endswith("jpg"):
                 frame = cv2.imread(os.path.join(root, file))
-                label = os.path.basename(root).replace(" ","-").lower()
+                label = root.split('/')[-2]
                 if label_type == "int":
                     labels.append(LABEL_LIST.index(label))
                 elif label_type == "char":
                     labels.append(label)
-                frames.append(frame)
+                frames.append(np.array(frame,dtype = 'uint8'))
     return frames, labels
 
 def read_info(label = False, index = False):
@@ -41,7 +42,8 @@ def get_folder_index(label):
     return index
 
 def yaml_loader(filepath):               #loading information from yaml file
-    data = yaml.load(file_descriptor)
+    with open(filepath, 'r') as file_descriptor:
+        data = yaml.load(file_descriptor)
     return data
 
 def add_user(filepath, data):            #adding data

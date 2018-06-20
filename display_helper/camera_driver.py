@@ -1,10 +1,7 @@
 import cv2
 from datetime import datetime
 
-CAMERA_PORT = 0
-camera = cv2.VideoCapture(CAMERA_PORT)
-
-def cam_read():
+def cam_read(camera):
     rect, frame = camera.read()
     video_feed = dict()
     if rect:
