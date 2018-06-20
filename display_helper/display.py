@@ -30,7 +30,7 @@ MODE=[1,2]
 #default mode set for graphic display
 I = 1
 
-def run(is_face_present, data):
+def run(data):
     screen, clock = init_screen()
     running = True
 
@@ -41,12 +41,12 @@ def run(is_face_present, data):
 
 
         if MODE[I] == 1:
-            if is_face_present == True:
+            if data["is_face_present"] == True:
                 display_image(screen, 'img.jpeg')
-                text.Text(screen, "Saavi", SCREEN_WIDTH/2, 200, font_size = 72).draw()
-                text.Text(screen, "Parth", SCREEN_WIDTH/2, 150).draw()
+                #text.Text(screen, "Saavi", SCREEN_WIDTH/2, 200, font_size = 72).draw()
+                text.Text(screen, data["face_info"]["full name"], SCREEN_WIDTH/2, 150).draw()
         else :
-            video_feed = camera_driver.cam_read()
+            video_feed = camera_driver.cam_read(data["camera"])
             pygame_frame = convert_cvimage(video_feed['frame'])
             screen.blit(pygame_frame, (0,0))
             window = pygame.surface.Surface((SCREEN_WIDTH/2,SCREEN_HEIGHT/2))
