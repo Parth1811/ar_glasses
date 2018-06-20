@@ -1,5 +1,6 @@
 #!/usr/bin/python
 
+from datetime import datetime
 import pygame
 import cv2
 import numpy as np
@@ -7,8 +8,11 @@ import numpy as np
 import text
 import camera_driver
 
-SCREEN_WIDTH=640
-SCREEN_HEIGHT=480
+SCREEN_WIDTH = 640
+SCREEN_HEIGHT = 480
+
+#MODE 1 is for graphic display and MODE 2  is for camera display
+MODE = 1
 
 def init_screen():
     pygame.init()
@@ -23,12 +27,39 @@ def display_image(screen, image_path):
     pygame.transform.scale(image, screen.get_size())
     screen.blit(image, (0,0))
 
+def mode_transition (screen, image_path, duration = 0.5):
+    global MODE
+    screen_width , screen_height = screen.get_size()
+    if MODE == 1:
+        start_x = screen_width/2
+        start_y = screen_height/2
+        end_x , end_y = 0,0
+        MODE = 2
+    elif MODE == 2:
+        end_x = screen_width/2
+        end_y = screen_height/2
+        start_x , start_y = 0,0
+        MODE = 1
+    start_time = datetime.now()
+    image = pygame.image.load(image_path)
+    transition = True
+    while transition:
+        dt = (datetime.now()-start_time).total_seconds()
+        if (dt < duration) and (dt > 0.01):
+            screen.fill((0,0,0))
+            shift_x = (start_x - end_x)*dt/duration
+            shift_y = (start_y - end_y)*dt/duration
+            window = pygame.surface.Surface((screen_width - start_x + shift_x , screen_height - start_y + shift_y))
+            image = pygame.transform.scale(image, window.get_size())
+            window.blit(image, (0,0))
+            screen.blit(window, (start_x - shift_x, start_y - shift_y))
+            pygame.display.update()
+        elif dt > duration:
+            transition = False
+            break
+        else :
+            continue
 
-#MODE[0] is for graphic display and MODE[1] is for camera display
-MODE=[1,2]
-
-#default mode set for graphic display
-I = 1
 
 def run(is_face_present, data):
     screen, clock = init_screen()
@@ -36,23 +67,26 @@ def run(is_face_present, data):
 
     while running:
         for event in pygame.event.get():
-            if event.type==pygame.QUIT:
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_LEFT:
+                    mode_transition(screen, 'resources/gui.jpg')
+            if event.type == pygame.QUIT:
                 running = False
 
 
-        if MODE[I] == 1:
+        if MODE == 2:
             if is_face_present == True:
-                display_image(screen, 'img.jpeg')
+                display_image(screen, 'resources/gui.jpg')
                 text.Text(screen, "Saavi", SCREEN_WIDTH/2, 200, font_size = 72).draw()
                 text.Text(screen, "Parth", SCREEN_WIDTH/2, 150).draw()
-        else :
+        elif MODE == 1:
             video_feed = camera_driver.cam_read()
             pygame_frame = convert_cvimage(video_feed['frame'])
             screen.blit(pygame_frame, (0,0))
             window = pygame.surface.Surface((SCREEN_WIDTH/2,SCREEN_HEIGHT/2))
             #window.fill((0,0,0), rect= [SCREEN_WIDTH/2, SCREEN_HEIGHT/2, SCREEN_WIDTH/2, SCREEN_HEIGHT/2])
             display_image(window, 'resources/gui.jpg')
-            window.set_alpha(200)
+            window.set_alpha(180)
             screen.blit(window, (SCREEN_WIDTH/2,SCREEN_HEIGHT/2))
             text.Text(screen, "Saavi", 480, 300, font_size = 72).draw()
 
