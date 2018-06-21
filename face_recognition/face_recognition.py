@@ -65,28 +65,37 @@ def recognise_face(data, frame = None):
         crop_face = video_feed["frame"][y:y+h,x:x+w]
         crop_face = cv2.cvtColor(crop_face, cv2.COLOR_RGB2GRAY)
         label_index, confidence = RECOGNIZER.predict(crop_face)
-        if confidence > 50:
+        if confidence > 45:
             data["face_info"] = database.read_info(index = label_index)
+            print "Face Recognised......"
 
 def run(data):
-    var = database.yaml_loader(os.path.join(database.FULL_DATABASE_PATH,"data.yaml"))
-    if var["database"]["is_database_updated"]:
-        print("Traning on updated database........")
-        train()
-    else:
-        print("Loading already trainned data........")
-        RECOGNIZER.read(FULL_PACKAGE_PATH + "trainner.yaml")
+    if data["first_run"]:
+        var = database.yaml_loader(os.path.join(database.FULL_DATABASE_PATH,"data.yaml"))
+        if var["database"]["is_database_updated"]:
+            print("Traning on updated database........")
+            train()
+        else:
+            print("Loading already trainned data........")
+            RECOGNIZER.read(FULL_PACKAGE_PATH + "trainner.yaml")
+        data["first_run"] = False
 
+    recognise_face(data)
+    print data
+    '''
     running = True
     while running:
         start_time = datetime.now()
         recognise_face(data)
+        print data
         dt = (datetime.now()-start_time).total_seconds()
         if  dt < DELAY:
-            time.sleep(dt)
+            time.sleep(DELAY - dt)
+    '''
+    return data
 
 
 if __name__ == '__main__':
     print "++++++++++DEBUG++++++++++"
-    data = dict()
+    data = {"camera" : cv2.VideoCapture(0)}
     run(data)

@@ -4,9 +4,12 @@ from datetime import datetime
 import pygame
 import cv2
 import numpy as np
+import os
 
 import text
 import camera_driver
+
+FULL_PACKAGE_PATH = os.path.expanduser("~/ar_glasses/display_helper")
 
 SCREEN_WIDTH = 640
 SCREEN_HEIGHT = 480
@@ -69,36 +72,31 @@ def run(data):
         for event in pygame.event.get():
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_LEFT:
-                    mode_transition(screen, 'resources/gui.jpg')
+                    mode_transition(screen, FULL_PACKAGE_PATH + '/resources/gui.jpg')
             if event.type == pygame.QUIT:
                 running = False
 
-
-<<<<<<< HEAD
         if MODE == 2:
-            if is_face_present == True:
-                display_image(screen, 'resources/gui.jpg')
-                text.Text(screen, "Saavi", SCREEN_WIDTH/2, 200, font_size = 72).draw()
-                text.Text(screen, "Parth", SCREEN_WIDTH/2, 150).draw()
-        elif MODE == 1:
-            video_feed = camera_driver.cam_read()
-=======
-        if MODE[I] == 1:
             if data["is_face_present"] == True:
-                display_image(screen, 'img.jpeg')
-                #text.Text(screen, "Saavi", SCREEN_WIDTH/2, 200, font_size = 72).draw()
-                text.Text(screen, data["face_info"]["full name"], SCREEN_WIDTH/2, 150).draw()
-        else :
+                display_image(screen, FULL_PACKAGE_PATH + '/resources/gui.jpg')
+                text.Text(screen, "Saavi", SCREEN_WIDTH/2, 200, font_size = 72).draw()
+        elif MODE == 1:
             video_feed = camera_driver.cam_read(data["camera"])
->>>>>>> face_recognition
             pygame_frame = convert_cvimage(video_feed['frame'])
             screen.blit(pygame_frame, (0,0))
             window = pygame.surface.Surface((SCREEN_WIDTH/2,SCREEN_HEIGHT/2))
             #window.fill((0,0,0), rect= [SCREEN_WIDTH/2, SCREEN_HEIGHT/2, SCREEN_WIDTH/2, SCREEN_HEIGHT/2])
-            display_image(window, 'resources/gui.jpg')
+            display_image(window, FULL_PACKAGE_PATH + '/resources/gui.jpg')
             window.set_alpha(180)
             screen.blit(window, (SCREEN_WIDTH/2,SCREEN_HEIGHT/2))
-            text.Text(screen, "Saavi", 480, 300, font_size = 72).draw()
+            #text.Text(screen, "Saavi", 480, 300, font_size = 72).draw()
+            try:
+                text.Text(screen,  data['face_info']['full name'], 480, 300, font_size = 72).draw()
+                screen.fill((0,0,0), rect= [data["location"]["x"],data["location"]["y"],data["location"]["w"],data["location"]["h"]])
+
+            except:
+                pass
+
 
         pygame.display.update()
 
@@ -113,5 +111,9 @@ def convert_cvimage(frame):
     return pygame_frame
 
 if __name__ == "__main__":
-    data = ["saavi", "machaxx"]
-    run (True, data)
+    data = dict()
+    data["camera"] = cv2.VideoCapture(0)
+    data["is_face_present"] = True
+    data["face_info"] = {"full name": "Partho"}
+
+    run (data)
