@@ -14,27 +14,31 @@ RECOGNIZER = cv2.face.LBPHFaceRecognizer_create()
 #RECOGNIZER = cv2.face.FisherFaceRecognizer_create()
 
 
-SCALE_FACTOR = 1.5
+SCALE_FACTOR = 1.3
 MIN_NEIGHBORS = 5
 
 DELAY = 1
 
-def train():
+def train(data):
     faces = []
-    frames, labels = database.read_all_images()  ## DEBUG: label_type = "char"
+    if data["debug_train"]:
+        frames, labels = database.read_all_images(data,"char")  ## DEBUG: label_type = "char"
+    else:
+        frames, labels = database.read_all_images(data)
+
     for face in frames:
         faces.append(FACE_CLASSIFIER.detectMultiScale(face, scaleFactor = SCALE_FACTOR, minNeighbors = MIN_NEIGHBORS))
 
     ## DEBUG:
-    '''
-    debug_counnter = -1
-    for face in faces:
-        debug_counnter +=1
-        if face == ():
-            print labels[debug_counnter]
-            continue
-        print face, labels[debug_counnter]
-    '''
+    if data["debug_train"]:
+        debug_counnter = -1
+        for face in faces:
+            debug_counnter +=1
+            if face == ():
+                print labels[debug_counnter]
+                continue
+            print face, labels[debug_counnter]
+
 
     counter, face_train_array, label_train_array = -1, [], []
     for face in faces:
@@ -57,6 +61,10 @@ def recognise_face(data, frame = None):
     face = FACE_CLASSIFIER.detectMultiScale(video_feed["frame"], scaleFactor = SCALE_FACTOR, minNeighbors = MIN_NEIGHBORS)
     if face == ():
         data["is_face_present"] = False
+        try:
+            del data["location"], data["face_info"]
+        except :
+            pass
         return
     else:
         data["is_face_present"] = True
@@ -74,7 +82,7 @@ def run(data):
         var = database.yaml_loader(os.path.join(database.FULL_DATABASE_PATH,"data.yaml"))
         if var["database"]["is_database_updated"]:
             print("Traning on updated database........")
-            train()
+            train(data)
         else:
             print("Loading already trainned data........")
             RECOGNIZER.read(FULL_PACKAGE_PATH + "trainner.yaml")
@@ -97,5 +105,6 @@ def run(data):
 
 if __name__ == '__main__':
     print "++++++++++DEBUG++++++++++"
-    data = {"camera" : cv2.VideoCapture(0)}
-    run(data)
+    #data = {"camera" : cv2.VideoCapture(0)}
+    #run(data)
+    train()

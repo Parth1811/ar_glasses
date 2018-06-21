@@ -3,16 +3,21 @@ import numpy as np
 import os
 import cv2
 import yaml
-from PIL import Image
 
 FULL_DATABASE_PATH = os.path.expanduser("~/ar_glasses/face_recognition/database")
 
 LABEL_LIST = os.listdir(FULL_DATABASE_PATH)
 LABEL_LIST.remove("data.yaml")
 
-def read_all_images(label_type = "int"):
+def read_all_images(data, label_type = "int"):
     labels, frames = [], []
     for root,dirs,files in os.walk(FULL_DATABASE_PATH):
+        ## DEBUG:
+        if data["debug_database"]:
+            print '==========='
+            print files , root
+            print '==========='
+
         for file in files:
             if file.endswith("jpg"):
                 frame = cv2.imread(os.path.join(root, file))

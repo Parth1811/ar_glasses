@@ -19,7 +19,7 @@ MODE = 1
 
 def init_screen():
     pygame.init()
-    display_screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT), pygame.FULLSCREEN)
+    display_screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
     pygame.display.set_caption("GRAPHIC DISPLAY")
     clock = pygame.time.Clock()
     return display_screen,clock
@@ -79,9 +79,9 @@ def run(data):
                 running = False
 
         if MODE == 2:
-            if data["is_face_present"] == True:
-                display_image(screen, FULL_PACKAGE_PATH + '/resources/gui.jpg')
-                text.Text(screen, "Saavi", SCREEN_WIDTH/2, 200, font_size = 72).draw()
+            #if data["is_face_present"] == True:
+            display_image(screen, FULL_PACKAGE_PATH + '/resources/gui.jpg')
+            text.Text(screen, "Saavi", SCREEN_WIDTH/2, 200, font_size = 72).draw()
         elif MODE == 1:
             video_feed = camera_driver.cam_read(data["camera"])
             pygame_frame = convert_cvimage(video_feed['frame'])
@@ -94,7 +94,7 @@ def run(data):
             #text.Text(screen, "Saavi", 480, 300, font_size = 72).draw()
             try:
                 text.Text(screen,  data['face_info']['full name'], 480, 300, font_size = 72).draw()
-                screen.fill((0,0,0), rect= [data["location"]["x"],data["location"]["y"],data["location"]["w"],data["location"]["h"]])
+                #screen.fill((0,0,0), rect= [data["location"]["x"],data["location"]["y"],data["location"]["w"],data["location"]["h"]])
 
             except:
                 pass
