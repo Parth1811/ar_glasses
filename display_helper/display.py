@@ -19,7 +19,7 @@ MODE = 1
 
 def init_screen():
     pygame.init()
-    display_screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
+    display_screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT), pygame.FULLSCREEN)
     pygame.display.set_caption("GRAPHIC DISPLAY")
     clock = pygame.time.Clock()
     return display_screen,clock
@@ -73,6 +73,8 @@ def run(data):
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_LEFT:
                     mode_transition(screen, FULL_PACKAGE_PATH + '/resources/gui.jpg')
+                if event.key == pygame.K_DOWN:
+                    running = False
             if event.type == pygame.QUIT:
                 running = False
 
