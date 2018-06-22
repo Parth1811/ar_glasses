@@ -13,6 +13,7 @@ FULL_PACKAGE_PATH = os.path.expanduser("~/ar_glasses/display_helper")
 
 SCREEN_WIDTH = 640
 SCREEN_HEIGHT = 480
+FPS = 30
 
 #MODE 1 is for graphic display and MODE 2  is for camera display
 MODE = 1
@@ -101,6 +102,7 @@ def run(data):
 
 
         pygame.display.update()
+        clock.tick(FPS)
 
     pygame.quit()
     quit()

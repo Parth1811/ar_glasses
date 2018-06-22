@@ -4,13 +4,14 @@ from multiprocessing import Process
 import sys
 import threading
 import time
-
+'''
 try:
     from picamera.array import PiRGBArray
     from picamera import PiCamera
     camera = PiCamera()
 except:
-    camera = cv2.VideoCapture(0)
+'''
+camera = cv2.VideoCapture(0)
 
 from face_recognition import face_recognition
 from display_helper import display
