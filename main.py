@@ -20,6 +20,9 @@ from display_helper import display
 CAMERA_PORT = 0
 DELAY = 1
 FULLSCREEN = False
+ML_FLAG = False
+DISPLAY = True
+
 
 data = {
     "camera" : camera ,
@@ -29,29 +32,27 @@ data = {
     "debug_train" : False
 }
 
-def video_loop(ML_FLAG):
+def video_loop(ML_FLAG = False):
     global data
     running = True
     while running:
-        try:
-            start_time = datetime.now()
-            if ML_FLAGL
-                data = face_recognition_ml.run(data)
-            else:
-                data = face_recognition.run(data)
-            dt = (datetime.now()-start_time).total_seconds()
-            if  dt < DELAY:
-                time.sleep(DELAY - dt)
-        except KeyboardInterrupt:
-            running = False
+        start_time = datetime.now()
+        if ML_FLAG:
+            data = face_recognition_ml.run(data)
+        else:
+            data = face_recognition.run(data)
+        dt = (datetime.now()-start_time).total_seconds()
+        if  dt < DELAY:
+            time.sleep(DELAY - dt)
 
 if __name__ == '__main__':
     if len(sys.argv) > 1:
         for command in sys.argv[1:]:
             if command == "no_display":
-                data["display_flag"] = False
+                DISPLAY = False
             if command == "debug_train":
                 data["debug_train"] = True
+                DISPLAY = False
             if command == "debug_database":
                 data["debug_database"] = True
             if command == "fullscreen":
@@ -59,9 +60,14 @@ if __name__ == '__main__':
             if command == "ml":
                 ML_FLAG = True
 
-    video_thread = threading.Thread(target = video_loop, args=[ML_FLAG])
-    video_thread.setDaemon(True)
-    video_thread.start()
-    if data["display_flag"]:
-        display.run(data, FULLSCREEN)
-    video_thread.join()
+    try:
+        video_thread = threading.Thread(target = video_loop, args=[ML_FLAG])
+        video_thread.daemon = True
+        video_thread.start()
+        if DISPLAY:
+            display.run(data, FULLSCREEN)
+        else:
+            while video_thread.isAlive():
+                video_thread.join(10)
+    except KeyboardInterrupt:
+        sys.exit()
