@@ -19,7 +19,7 @@ from display_helper import display
 
 CAMERA_PORT = 0
 DELAY = 1
-
+FULLSCREEN = False
 
 data = {
     "camera" : camera ,
@@ -29,14 +29,16 @@ data = {
     "debug_train" : False
 }
 
-def video_loop():
+def video_loop(ML_FLAG):
     global data
     running = True
     while running:
         try:
             start_time = datetime.now()
-            #data = face_recognition.run(data)
-            data = face_recognition_ml.run(data)
+            if ML_FLAGL
+                data = face_recognition_ml.run(data)
+            else:
+                data = face_recognition.run(data)
             dt = (datetime.now()-start_time).total_seconds()
             if  dt < DELAY:
                 time.sleep(DELAY - dt)
@@ -52,10 +54,14 @@ if __name__ == '__main__':
                 data["debug_train"] = True
             if command == "debug_database":
                 data["debug_database"] = True
+            if command == "fullscreen":
+                FULLSCREEN = True
+            if command == "ml":
+                ML_FLAG = True
 
-    video_thread = threading.Thread(target = video_loop)
+    video_thread = threading.Thread(target = video_loop, args=[ML_FLAG])
     video_thread.setDaemon(True)
     video_thread.start()
     if data["display_flag"]:
-        display.run(data)
+        display.run(data, FULLSCREEN)
     video_thread.join()

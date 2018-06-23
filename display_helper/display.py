@@ -18,9 +18,12 @@ FPS = 30
 #MODE 1 is for graphic display and MODE 2  is for camera display
 MODE = 1
 
-def init_screen():
+def init_screen(fullscreen):
     pygame.init()
-    display_screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
+    if fullscreen:
+        display_screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT), pygame.FULLSCREEN)
+    else:
+        display_screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
     pygame.display.set_caption("GRAPHIC DISPLAY")
     clock = pygame.time.Clock()
     return display_screen,clock
@@ -65,8 +68,8 @@ def mode_transition (screen, image_path, duration = 0.5):
             continue
 
 
-def run(data):
-    screen, clock = init_screen()
+def run(data, fullscreen = False):
+    screen, clock = init_screen(fullscreen)
     running = True
 
     while running:
