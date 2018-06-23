@@ -14,6 +14,7 @@ except:
 camera = cv2.VideoCapture(0)
 
 from face_recognition import face_recognition
+from face_recognition import face_recognition_ml
 from display_helper import display
 
 CAMERA_PORT = 0
@@ -34,7 +35,8 @@ def video_loop():
     while running:
         try:
             start_time = datetime.now()
-            data = face_recognition.run(data)
+            #data = face_recognition.run(data)
+            data = face_recognition_ml.run(data)
             dt = (datetime.now()-start_time).total_seconds()
             if  dt < DELAY:
                 time.sleep(DELAY - dt)

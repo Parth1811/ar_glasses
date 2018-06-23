@@ -9,8 +9,9 @@ import camera_driver
 
 FULL_PACKAGE_PATH = os.path.expanduser("~/ar_glasses/face_recognition/")
 FACE_CLASSIFIER = cv2.CascadeClassifier(FULL_PACKAGE_PATH + 'haarcascade_frontalface_default.xml')
-RECOGNIZER = cv2.createLBPHFaceRecognizer()
-#RECOGNIZER = cv2.face.LBPHFaceRecognizer_create()
+
+#RECOGNIZER = cv2.createLBPHFaceRecognizer()
+RECOGNIZER = cv2.face.LBPHFaceRecognizer_create()
 #RECOGNIZER = cv2.face.EigenFaceRecognizer_create()
 #RECOGNIZER = cv2.face.FisherFaceRecognizer_create()
 
