@@ -29,6 +29,28 @@ def read_all_images(data, label_type = "int"):
                 frames.append(np.array(frame,dtype = 'uint8'))
     return frames, labels
 
+
+def read_single_images(data, path_instead_of_frame = False):
+    labels, frames = [], []
+    for name in LABEL_LIST:
+        variables = yaml_loader(os.path.join(FULL_DATABASE_PATH, name, "data.yaml"))
+        profile_pic_path = os.path.join(FULL_DATABASE_PATH,name,"images",variables["profile picture"])
+        if path_instead_of_frame:
+            frames.append(profile_pic_path)
+        else:
+            frames.append(cv2.imread(profile_pic_path))
+
+    return frames, LABEL_LIST
+
+def get_profile_picture(label):
+    if label in LABEL_LIST:
+        variables = yaml_loader(os.path.join(FULL_DATABASE_PATH, label, "data.yaml"))
+        profile_pic_path = os.path.join(FULL_DATABASE_PATH,label,"images",variables["profile picture"])
+        image =  cv2.imread(profile_pic_path)
+        return image
+    else:
+        print ("NO such user exists")
+
 def read_info(label = False, index = False):
     if index == False:
         if label == False:
