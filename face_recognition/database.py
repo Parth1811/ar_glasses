@@ -73,9 +73,61 @@ def yaml_loader(filepath):               #loading information from yaml file
         data = yaml.load(file_descriptor)
     return data
 
-def add_user(filepath, data):            #adding data
+def yaml_save(filepath, data):
     with open(filepath, 'w') as adding_data:
         yaml.dump(data, adding_data)
+
+def add_user(name, filepaths = [], frames = [], profile_pic = "1.jpg",\
+    meta_data = "Not available", add_from_terminal = False):            #adding data
+    if add_from_terminal:
+        full_name = raw_input("Full name: ")
+        meta_data = raw_input("Descrption: ")
+        name = name.lower()
+    else :
+        full_name = name
+        name = full_name.split()[0].lower()
+
+    counter = 1
+    data = {
+    "full name" : full_name ,
+    "profile picture" : profile_pic ,
+    "meta data" : meta_data ,
+    "no of images" : len(frames) + len(filepaths)
+    }
+
+    if filepaths == [] and frames == []:
+        print ("Please Provide either a frame a filepath to image..........")
+        return
+    else:
+        try:
+            os.mkdir(os.path.join(FULL_DATABASE_PATH, name))
+            os.mkdir(os.path.join(FULL_DATABASE_PATH, name, "images"))
+        except:
+            pass
+        if frames != []:
+            for frame in frames:
+                cv2.imwrite(os.path.join(FULL_DATABASE_PATH, name, "images", str(counter) + ".jpg"), frame)
+                counter += 1
+            yaml_save(os.path.join(FULL_DATABASE_PATH, name, "data.yaml"), data)
+
+        if filepaths != []:
+            for filepath in filepaths:
+                os.system("cp "+ filepath +" "+ os.path.join(FULL_DATABASE_PATH, name, "images", str(counter) + ".jpg"))
+                counter += 1
+            yaml_save(os.path.join(FULL_DATABASE_PATH, name, "data.yaml"), data)
+    global LABEL_LIST
+    LABEL_LIST = os.listdir(FULL_DATABASE_PATH)
+    LABEL_LIST.remove("data.yaml")
+    print ("Added "+ name +" sucessfully to the database.........")
+
+def remove_user(label):
+    if label in LABEL_LIST:
+        os.system("rm -r " + os.path.join(FULL_DATABASE_PATH, label))
+        LABEL_LIST.remove(label)
+    else:
+        print("Invalid name............")
+        print("Please type the exact name of the floder")
+
 
 if __name__ == "__main__":
     print "+++++++++++DEBUG++++++++++++"
