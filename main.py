@@ -50,15 +50,19 @@ if __name__ == '__main__':
         for command in sys.argv[1:]:
             if command == "no_display":
                 DISPLAY = False
-            if command == "debug_train":
+            elif command == "debug_train":
                 data["debug_train"] = True
                 DISPLAY = False
-            if command == "debug_database":
+            elif command == "debug_database":
                 data["debug_database"] = True
-            if command == "fullscreen":
+            elif command == "fullscreen":
                 FULLSCREEN = True
-            if command == "ml":
+            elif command == "ml":
                 ML_FLAG = True
+            else:
+                print("ERROR:       Invalid command")
+                print("List of valid commands = [ no_display, debug_database, debug_train, fullscreen, ml]")
+                sys.exit(1)
 
     try:
         video_thread = threading.Thread(target = video_loop, args=[ML_FLAG])
