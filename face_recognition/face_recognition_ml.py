@@ -22,8 +22,8 @@ def run(data):
         data["first_run"] = False
 
     face_encoding_current, matches = [], []
-    video_feed = camera_driver.cam_read(data["camera"])
-    small_frame = cv2.resize(video_feed["frame"], (0, 0), fx=0.25, fy=0.25)
+    #video_feed = camera_driver.cam_read(data["camera"])
+    small_frame = cv2.resize(data["frame"], (0, 0), fx=0.25, fy=0.25)
     rgb_small_frame = small_frame[:, :, ::-1]
     face_location = api.face_locations(rgb_small_frame)
     if face_location != []:

@@ -1,6 +1,7 @@
 import cv2
 from datetime import datetime
 from multiprocessing import Process
+from multiprocessing import Manager
 import sys
 import threading
 import time
@@ -16,21 +17,35 @@ camera = cv2.VideoCapture(0)
 from face_recognition import face_recognition
 from face_recognition import face_recognition_ml
 from display_helper import display
+from drivers import camera_driver
+
 
 CAMERA_PORT = 0
 DELAY = 1
+FPS =30
 FULLSCREEN = False
 ML_FLAG = False
 DISPLAY = True
 
+manager = Manager()
+data = manager.dict()
+data ["camera"] = camera
+data["first_run"] = True
+data["display_flag"] = True
+data["debug_database"] = False
+data["debug_train"] = False
 
-data = {
-    "camera" : camera ,
-    "first_run" : True,
-    "display_flag" : True,
-    "debug_database" : False,
-    "debug_train" : False
-}
+def camera_feed():
+    global data
+    camera_ = camera
+    running = True
+    while running:
+        start_time = datetime.now()
+        delay = 1/float(FPS)
+        data["frame"] = camera_driver.cam_read(camera)["frame"]
+        dt = (datetime.now()-start_time).total_seconds()
+        if  dt < delay:
+            time.sleep(delay - dt)
 
 def video_loop(ML_FLAG = False):
     global data
@@ -61,13 +76,25 @@ if __name__ == '__main__':
                 ML_FLAG = True
 
     try:
-        video_thread = threading.Thread(target = video_loop, args=[ML_FLAG])
+        video_feed = threading.Thread(target = camera_feed)
+        video_feed.daemon = True
+        video_feed.start()
+        time.sleep(5)
+        video_thread = Process(target = video_loop, args=[ML_FLAG])
         video_thread.daemon = True
         video_thread.start()
         if DISPLAY:
             display.run(data, FULLSCREEN)
         else:
-            while video_thread.isAlive():
+            while video_thread.is_alive():
                 video_thread.join(10)
+
+        # while True:
+        #     try:
+        #         if data["frame"] == None:
+        #             print data
+        #     except:
+        #         pass
+
     except KeyboardInterrupt:
         sys.exit()

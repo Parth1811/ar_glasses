@@ -87,8 +87,8 @@ def run(data, fullscreen = False):
             display_image(screen, FULL_PACKAGE_PATH + '/resources/gui.jpg')
             text.Text(screen, "Saavi", SCREEN_WIDTH/2, 200, font_size = 72).draw()
         elif MODE == 1:
-            video_feed = camera_driver.cam_read(data["camera"])
-            pygame_frame = convert_cvimage(video_feed['frame'])
+            #video_feed = camera_driver.cam_read(data["camera"])
+            pygame_frame = convert_cvimage(data['frame'])
             screen.blit(pygame_frame, (0,0))
             window = pygame.surface.Surface((SCREEN_WIDTH/2,SCREEN_HEIGHT/2))
             #window.fill((0,0,0), rect= [SCREEN_WIDTH/2, SCREEN_HEIGHT/2, SCREEN_WIDTH/2, SCREEN_HEIGHT/2])
