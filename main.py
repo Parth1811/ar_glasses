@@ -26,6 +26,7 @@ FPS =30
 FULLSCREEN = False
 ML_FLAG = False
 DISPLAY = True
+PROCESS_FLAG = True
 
 manager = Manager()
 data = manager.dict()
@@ -74,19 +75,24 @@ if __name__ == '__main__':
                 FULLSCREEN = True
             if command == "ml":
                 ML_FLAG = True
+            if command == "pro":
+                PROCESS_FLAG = True
 
     try:
         video_feed = threading.Thread(target = camera_feed)
         video_feed.daemon = True
         video_feed.start()
         time.sleep(5)
-        video_thread = Process(target = video_loop, args=[ML_FLAG])
+        if PROCESS_FLAG:
+            video_thread = Process(target = video_loop, args=[ML_FLAG])
+        else:
+            video_thread = threading.Thread(target = video_loop, args=[ML_FLAG])
         video_thread.daemon = True
         video_thread.start()
         if DISPLAY:
             display.run(data, FULLSCREEN)
         else:
-            while video_thread.is_alive():
+            while video_feed.isAlive():
                 video_thread.join(10)
 
         # while True:
