@@ -8,12 +8,15 @@ import os
 
 import text
 import camera_driver
+import CONST as C
+
 
 FULL_PACKAGE_PATH = os.path.expanduser("~/ar_glasses/display_helper")
 
 SCREEN_WIDTH = 640
 SCREEN_HEIGHT = 480
 FPS = 30
+PADDING_4_M1 = 20
 
 #MODE 1 is for graphic display and MODE 2  is for camera display
 MODE = 1
@@ -83,25 +86,26 @@ def run(data, fullscreen = False):
                 running = False
 
         if MODE == 2:
-            #if data["is_face_present"] == True:
             display_image(screen, FULL_PACKAGE_PATH + '/resources/gui.jpg')
-            text.Text(screen, "Saavi", SCREEN_WIDTH/2, 200, font_size = 72).draw()
+            text_y = 200
+            if 'face_info' in data:
+                for face in data["face_info"]:
+                    text.Text(screen, face['full name'], SCREEN_WIDTH/2, text_y, font_size = 72, color=C.GREEN).draw()
+                    text_y += 70
         elif MODE == 1:
+            text_x, text_y = (3*SCREEN_WIDTH/4)-PADDING_4_M1/4, (3*SCREEN_HEIGHT/4)-PADDING_4_M1
             video_feed = camera_driver.cam_read(data["camera"])
             pygame_frame = convert_cvimage(video_feed['frame'])
             screen.blit(pygame_frame, (0,0))
-            window = pygame.surface.Surface((SCREEN_WIDTH/2,SCREEN_HEIGHT/2))
-            #window.fill((0,0,0), rect= [SCREEN_WIDTH/2, SCREEN_HEIGHT/2, SCREEN_WIDTH/2, SCREEN_HEIGHT/2])
+            window = pygame.surface.Surface((SCREEN_WIDTH/2-PADDING_4_M1,SCREEN_HEIGHT/2-PADDING_4_M1))
             display_image(window, FULL_PACKAGE_PATH + '/resources/gui.jpg')
             window.set_alpha(180)
             screen.blit(window, (SCREEN_WIDTH/2,SCREEN_HEIGHT/2))
-            #text.Text(screen, "Saavi", 480, 300, font_size = 72).draw()
-            try:
-                text.Text(screen,  data['face_info']['full name'], 480, 300, font_size = 72).draw()
-                #screen.fill((0,0,0), rect= [data["location"]["x"],data["location"]["y"],data["location"]["w"],data["location"]["h"]])
+            if 'face_info' in data:
+                for face in data["face_info"]:
+                    text.Text(screen,  face['full name'], text_x, text_y, font_size = 60).draw()
+                    text_y += 50
 
-            except:
-                pass
 
 
         pygame.display.update()
@@ -121,6 +125,6 @@ if __name__ == "__main__":
     data = dict()
     data["camera"] = cv2.VideoCapture(0)
     data["is_face_present"] = True
-    data["face_info"] = {"full name": "Partho"}
+    data["face_info"] = [{"full name": "Partho"}, {"full name": "Saavi"}]
 
     run (data)

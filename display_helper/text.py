@@ -6,14 +6,14 @@ import CONST as C
 
 class Text():
     def __init__(self, screen_, label_, loc_x, loc_y, font_size = C.TEXT_FONT_SIZE,\
-        color_ = C.WHITE, bg_color_ = None):
+        color = C.WHITE, bg_color = None):
         self.screen = screen_
         self.label = label_
         self.x_location = loc_x
         self.y_location = loc_y
         self.size = font_size
-        self.color = color_
-        self.bg_color = bg_color_
+        self.color = color
+        self.bg_color = bg_color
 
 
 
