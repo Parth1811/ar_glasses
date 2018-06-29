@@ -26,7 +26,7 @@ FPS =30
 FULLSCREEN = False
 ML_FLAG = False
 DISPLAY = True
-PROCESS_FLAG = True
+PROCESS_FLAG = False
 
 manager = Manager()
 data = manager.dict()
