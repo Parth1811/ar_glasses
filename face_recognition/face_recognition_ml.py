@@ -22,12 +22,13 @@ def run(data):
         data["first_run"] = False
 
     face_encoding_current, matches = [], []
-    video_feed = camera_driver.cam_read(data["camera"])
-    small_frame = cv2.resize(video_feed["frame"], (0, 0), fx=0.25, fy=0.25)
+    #video_feed = camera_driver.cam_read(data["camera"])
+    small_frame = cv2.resize(data["frame"], (0, 0), fx=0.25, fy=0.25)
     rgb_small_frame = small_frame[:, :, ::-1]
     face_location = api.face_locations(rgb_small_frame)
     if face_location != []:
         data["is_face_present"] = True
+        face_info = []
         data["location"] = face_location
         face_encoding_current = api.face_encodings(rgb_small_frame, face_location)
         for face_encoding in face_encoding_current:
@@ -35,9 +36,10 @@ def run(data):
 
             if True in matches:
                 first_match_index = matches.index(True)
-                data["face_info"] = database.read_info(index = first_match_index)
+                face_info.append(database.read_info(index = first_match_index))
             else:
-                data["face_info"] = {"full name" : "No match"}
+                face_info.append({"full name" : "No match"})
+        data["face_info"] = face_info
     else:
         data["is_face_present"] = False
         try:
