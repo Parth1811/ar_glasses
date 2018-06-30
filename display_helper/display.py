@@ -94,8 +94,8 @@ def run(data, fullscreen = False):
                     text_y += 70
         elif MODE == 1:
             text_x, text_y = (3*SCREEN_WIDTH/4)-PADDING_4_M1/4, (3*SCREEN_HEIGHT/4)-PADDING_4_M1
-            video_feed = camera_driver.cam_read(data["camera"])
-            pygame_frame = convert_cvimage(video_feed['frame'])
+            #video_feed = camera_driver.cam_read(data["camera"])
+            pygame_frame = convert_cvimage(data['frame'])
             screen.blit(pygame_frame, (0,0))
             window = pygame.surface.Surface((SCREEN_WIDTH/2-PADDING_4_M1,SCREEN_HEIGHT/2-PADDING_4_M1))
             display_image(window, FULL_PACKAGE_PATH + '/resources/gui.jpg')
