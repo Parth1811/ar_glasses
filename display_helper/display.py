@@ -101,7 +101,16 @@ def run(data, fullscreen = False):
             if event.type == pygame.QUIT:
                 running = False
 
-        if MODE == 2:
+        if data["first_run"]:
+            screen.fill(C.WHITE)
+            time_diff = abs(datetime.now().microsecond/100000-5)/float(5)
+            color = (255*time_diff, 255*time_diff, 255*time_diff)
+            print color
+            text.Text(screen, "Training! Be patient :)", SCREEN_WIDTH/2, SCREEN_HEIGHT/2, font_size = 35 ,font_style= "tlwg typist", color=color).draw()
+
+
+
+        elif MODE == 2:
             display_image(screen, FULL_PACKAGE_PATH + '/resources/gui.jpg')
             text_y = 200
             if 'face_info' in data:
