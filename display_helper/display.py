@@ -17,6 +17,7 @@ SCREEN_WIDTH = 640
 SCREEN_HEIGHT = 480
 FPS = 30
 PADDING_4_M1 = 20
+ZOOM_FACTOR = 1
 
 #MODE 1 is for graphic display and MODE 2  is for camera display
 MODE = 1
@@ -70,6 +71,17 @@ def mode_transition (screen, image_path, duration = 0.5):
         else :
             continue
 
+def zoom(increase = False, decrease = False):
+    global ZOOM_FACTOR
+    if increase:
+        ZOOM_FACTOR += 0.2
+    if decrease:
+        ZOOM_FACTOR -= 0.2
+    if ZOOM_FACTOR > 2:
+        ZOOM_FACTOR = 2
+    if ZOOM_FACTOR < 1:
+        ZOOM_FACTOR = 1
+
 
 def run(data, fullscreen = False):
     screen, clock = init_screen(fullscreen)
@@ -82,6 +94,10 @@ def run(data, fullscreen = False):
                     mode_transition(screen, FULL_PACKAGE_PATH + '/resources/gui.jpg')
                 if event.key == pygame.K_DOWN:
                     running = False
+                if event.key == pygame.K_EQUALS:
+                    zoom(increase = True)
+                if event.key == pygame.K_MINUS:
+                    zoom(decrease = True)
             if event.type == pygame.QUIT:
                 running = False
 
@@ -96,7 +112,8 @@ def run(data, fullscreen = False):
             text_x, text_y = (3*SCREEN_WIDTH/4)-PADDING_4_M1/4, (3*SCREEN_HEIGHT/4)-PADDING_4_M1
             #video_feed = camera_driver.cam_read(data["camera"])
             pygame_frame = convert_cvimage(data['frame'])
-            screen.blit(pygame_frame, (0,0))
+            blit_x , blit_y = screen.get_size()[0]-pygame_frame.get_size()[0], screen.get_size()[1]-pygame_frame.get_size()[1]
+            screen.blit(pygame_frame, (blit_x/2,blit_y/2))
             window = pygame.surface.Surface((SCREEN_WIDTH/2-PADDING_4_M1,SCREEN_HEIGHT/2-PADDING_4_M1))
             display_image(window, FULL_PACKAGE_PATH + '/resources/gui.jpg')
             window.set_alpha(180)
@@ -117,9 +134,10 @@ def run(data, fullscreen = False):
 def convert_cvimage(frame):
     frame = np.rot90(frame)
     frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
-    frame = cv2.resize(frame,(SCREEN_HEIGHT,SCREEN_WIDTH))
+    frame = cv2.resize(frame,(int(SCREEN_HEIGHT*ZOOM_FACTOR),int(SCREEN_WIDTH*ZOOM_FACTOR)))
     pygame_frame = pygame.surfarray.make_surface(frame)
     return pygame_frame
+
 
 if __name__ == "__main__":
     data = dict()
