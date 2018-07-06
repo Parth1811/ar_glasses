@@ -70,15 +70,16 @@ def recognise_face(data, frame = None):
         return
     else:
         data["is_face_present"] = True
-        data["face_info"] = []
+        face_info = []
         for (x, y, w, h) in face:
             data['location'] = {'x':x,'y':y,'w':w,'h':h}
             crop_face = video_feed["frame"][y:y+h,x:x+w]
             crop_face = cv2.cvtColor(crop_face, cv2.COLOR_RGB2GRAY)
             label_index, confidence = RECOGNIZER.predict(crop_face)
             if confidence > 45:
-                data["face_info"].append(database.read_info(index = label_index))
+                face_info.append(database.read_info(index = label_index))
                 print "Face Recognised......"
+        data["face_info"] = face_info
 
 def run(data):
     if data["first_run"]:
