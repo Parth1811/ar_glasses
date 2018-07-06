@@ -30,7 +30,7 @@ PROCESS_FLAG = False
 
 manager = Manager()
 data = manager.dict()
-data ["camera"] = camera
+#data ["camera"] = camera
 data["first_run"] = True
 data["display_flag"] = True
 data["debug_database"] = False
