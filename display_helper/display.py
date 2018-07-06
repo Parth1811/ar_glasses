@@ -38,9 +38,14 @@ def display_image(screen, image_path):
     pygame.transform.scale(image, screen.get_size())
     screen.blit(image, (0,0))
 
-def mode_transition (screen, image_path, duration = 0.5):
+def mode_transition (screen, image_path, duration = 0.5, set_mode = False):
     global MODE
     screen_width , screen_height = screen.get_size()
+    if set_mode:
+        if set_mode == 1:
+            MODE = 2
+        if set_mode == 2:
+            MODE = 1
     if MODE == 1:
         start_x = screen_width/2
         start_y = screen_height/2
@@ -86,6 +91,7 @@ def zoom(increase = False, decrease = False):
 def run(data, fullscreen = False):
     screen, clock = init_screen(fullscreen)
     running = True
+    start_trip = False
 
     while running:
         for event in pygame.event.get():
@@ -105,32 +111,35 @@ def run(data, fullscreen = False):
             screen.fill(C.WHITE)
             time_diff = abs(datetime.now().microsecond/100000-5)/float(5)
             color = (255*time_diff, 255*time_diff, 255*time_diff)
-            print color
             text.Text(screen, "Training! Be patient :)", SCREEN_WIDTH/2, SCREEN_HEIGHT/2, font_size = 35 ,font_style= "tlwg typist", color=color).draw()
 
 
+        else:
+            if not start_trip:
+                mode_transition(screen, FULL_PACKAGE_PATH + '/resources/gui.jpg', set_mode = 1)
+                start_trip = True
 
-        elif MODE == 2:
-            display_image(screen, FULL_PACKAGE_PATH + '/resources/gui.jpg')
-            text_y = 200
-            if 'face_info' in data:
-                for face in data["face_info"]:
-                    text.Text(screen, face['full name'], SCREEN_WIDTH/2, text_y, font_size = 72, color=C.GREEN).draw()
-                    text_y += 70
-        elif MODE == 1:
-            text_x, text_y = (3*SCREEN_WIDTH/4)-PADDING_4_M1/4, (3*SCREEN_HEIGHT/4)-PADDING_4_M1
-            #video_feed = camera_driver.cam_read(data["camera"])
-            pygame_frame = convert_cvimage(data['frame'])
-            blit_x , blit_y = screen.get_size()[0]-pygame_frame.get_size()[0], screen.get_size()[1]-pygame_frame.get_size()[1]
-            screen.blit(pygame_frame, (blit_x/2,blit_y/2))
-            window = pygame.surface.Surface((SCREEN_WIDTH/2-PADDING_4_M1,SCREEN_HEIGHT/2-PADDING_4_M1))
-            display_image(window, FULL_PACKAGE_PATH + '/resources/gui.jpg')
-            window.set_alpha(180)
-            screen.blit(window, (SCREEN_WIDTH/2,SCREEN_HEIGHT/2))
-            if 'face_info' in data:
-                for face in data["face_info"]:
-                    text.Text(screen,  face['full name'], text_x, text_y, font_size = 60).draw()
-                    text_y += 50
+            if MODE == 2:
+                display_image(screen, FULL_PACKAGE_PATH + '/resources/gui.jpg')
+                text_y = 200
+                if 'face_info' in data:
+                    for face in data["face_info"]:
+                        text.Text(screen, face['full name'], SCREEN_WIDTH/2, text_y, font_size = 72, color=C.GREEN).draw()
+                        text_y += 70
+            elif MODE == 1:
+                text_x, text_y = (3*SCREEN_WIDTH/4)-PADDING_4_M1/4, (3*SCREEN_HEIGHT/4)-PADDING_4_M1
+                #video_feed = camera_driver.cam_read(data["camera"])
+                pygame_frame = convert_cvimage(data['frame'])
+                blit_x , blit_y = screen.get_size()[0]-pygame_frame.get_size()[0], screen.get_size()[1]-pygame_frame.get_size()[1]
+                screen.blit(pygame_frame, (blit_x/2,blit_y/2))
+                window = pygame.surface.Surface((SCREEN_WIDTH/2-PADDING_4_M1,SCREEN_HEIGHT/2-PADDING_4_M1))
+                display_image(window, FULL_PACKAGE_PATH + '/resources/gui.jpg')
+                window.set_alpha(180)
+                screen.blit(window, (SCREEN_WIDTH/2,SCREEN_HEIGHT/2))
+                if 'face_info' in data:
+                    for face in data["face_info"]:
+                        text.Text(screen,  face['full name'], text_x, text_y, font_size = 60).draw()
+                        text_y += 50
 
 
 

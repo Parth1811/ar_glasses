@@ -4,7 +4,6 @@ import cv2
 import dlib
 import numpy as np
 from datetime import datetime
-import time
 
 import database
 import camera_driver
@@ -20,7 +19,6 @@ def run(data):
         for path in paths:
             frame = api.load_image_file(path)
             face_encodings_array.append(api.face_encodings(frame)[0])
-            time.sleep(1)
         data["first_run"] = False
 
     face_encoding_current, matches = [], []
