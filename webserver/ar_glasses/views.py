@@ -13,28 +13,25 @@ def buttons(request) :
 	return render(request , 'ar_glasses/buttons.html')
 
 def zoomIn(request) :
-	cmd = "xdotool key {}".format("+")
-	os.system(cmd)	
+	cmd = "xdotool key equal"
+	os.system(cmd)
 	return HttpResponseRedirect('../')
 
 def zoomOut(request) :
-	cmd = "xdotool key {}".format("-")
+	cmd = "xdotool key minus"
 	os.system(cmd)
-	return redirect('http://127.0.0.1:8000/buttons/')
+	return HttpResponseRedirect('../')
 
 def Mode1(request) :
-        cmd = "xdotool key {}".format("1")
+        cmd = "xdotool key m"
         os.system(cmd)
-        return redirect('http://127.0.0.1:8000/buttons/')
+        return HttpResponseRedirect('../')
 
 def Mode2(request) :
         cmd = "xdotool key {}".format("2")
         os.system(cmd)
-        return redirect('http://127.0.0.1:8000/buttons/')
+        return HttpResponseRedirect('../')
 
 def WebCam(request) :
 	return render(request, 'ar_glasses/webcam.html')
 
-
-
-	

@@ -82,6 +82,8 @@ def run(data, fullscreen = False):
                     mode_transition(screen, FULL_PACKAGE_PATH + '/resources/gui.jpg')
                 if event.key == pygame.K_DOWN:
                     running = False
+                if event.key == pygame.K_m:
+                    mode_transition(screen, FULL_PACKAGE_PATH + '/resources/gui.jpg')
             if event.type == pygame.QUIT:
                 running = False
 
